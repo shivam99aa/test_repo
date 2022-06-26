@@ -1,0 +1,41 @@
+version: 0.2
+
+env:
+  variables:
+    ENVIRONMENT: dev
+    TF_IN_AUTOMATION: 1
+    TERRAFORM_VERSION: 1.2.1
+    TERRATEST_VERSION: v0.40.4
+    BASE_PATH: terraform/modules
+    ## TEST_ACCOUNT_ASSUMED_ROLE: "" In case of cross deployment this is the role in the target account.
+
+phases:
+  install:
+    runtime-versions:
+      golang: 1.16
+      python: 3.8
+    commands:
+      - ./${BASE_PATH}/install.sh
+  pre_build:
+    commands:
+      - echo Starting pre-build...
+      - ./${BASE_PATH}/prebuild.sh
+  build:
+    commands:
+      - ./${BASE_PATH}/test.sh
+  post_build:
+    commands:
+      - echo Test Performed completed on `date`
+reports:
+  cicd-reports:
+    files:
+      - "**/*.xml"
+      - "**/*.log"
+    base-directory: "terraform/modules/cicd/test/reports"
+    discard-paths: no
+artifacts:
+  files:
+    - terraform/modules/cicd/glue_scripts/Dev-DAT-5678_deployment.py
+    - terraform/modules/cicd/templates/cfn.yml
+  discard-paths: yes
+  name: output-artifacts

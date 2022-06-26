@@ -1,0 +1,47 @@
+AWSTemplateFormatVersion: '2010-09-09'
+# Conditions:
+#   IsEnvDEV: !Equals 
+#     - !Ref 'AWS::AccountId'
+#     - '246462274172'
+#   IsEnvQA: !Equals 
+#     - !Ref 'AWS::AccountId'
+#     - 'yyyyyyyyyyyy'
+#   IsEnvPROD: !Equals 
+#     - !Ref 'AWS::AccountId'
+#     - 'zzzzzzzzzzzz'
+Parameters:
+  # DevPrefix:
+  #   Type: String
+  #   Default: d
+  # QAPrefix:
+  #   Type: String
+  #   Default: qa
+  # ProdPrefix:
+  #   Type: String
+  #   Default: p
+  GlueIAMRoleName:
+    Type: String
+    Default: 'AWSGlueCustomServiceRole"'
+  JobName:
+    Type: String
+    Default: 'my-job2'   
+  S3Path:
+    Type: String
+    Default: 'aws-glue-scripts'     
+    
+Resources:
+  CFNRGlueETL:
+    Type: AWS::Glue::Job   
+    Properties:
+      Role: !Ref GlueIAMRoleName
+      Description: My Glue job 1
+      Command:   
+        Name: glueetl  
+        ScriptLocation: "s3://glue-job-life360/Dev-DAT-5678_deployment.py"
+      AllocatedCapacity: 10  
+      ExecutionProperty:   
+        MaxConcurrentRuns: 1        
+      Name: !Sub ${JobName}
+      DefaultArguments:
+        '--enable-glue-datacatalog': ''
+      GlueVersion: 2.0
