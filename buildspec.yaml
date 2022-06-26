@@ -15,14 +15,14 @@ phases:
       golang: 1.16
       python: 3.8
     commands:
-      - ./${BASE_PATH}/install.sh
+      - ./install.sh
   pre_build:
     commands:
       - echo Starting pre-build...
-      - ./${BASE_PATH}/prebuild.sh
+      - ./prebuild.sh
   build:
     commands:
-      - ./${BASE_PATH}/test.sh
+      - ./test.sh
   post_build:
     commands:
       - echo Test Performed completed on `date`
