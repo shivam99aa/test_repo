@@ -15,6 +15,7 @@ phases:
       golang: 1.16
       python: 3.8
     commands:
+      - ls
       - ./install.sh
   pre_build:
     commands:
