@@ -24,10 +24,7 @@ phases:
   build:
     commands:
       - aws s3 ls
-      - aws s3 cp glue_repo/cf/Dev-DAT-5678_deployment.py s3://glue-job-life360x/Dev-DAT-5678_deployment.py
-  post_build:
-    commands:
-      - echo Test Performed completed on `date`
+      - python dev_deploy.py
 # reports:
 #   cicd-reports:
 #     files:
