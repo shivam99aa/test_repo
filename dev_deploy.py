@@ -9,7 +9,7 @@
 
 from job_deployment import *
 
-boto3.setup_default_session(profile_name='264243034530_DataEngineer')
+# boto3.setup_default_session(profile_name='264243034530_DataEngineer')
 
 # get job config locally and retrieve job name
 with open('./job_config.json', 'r') as job_config:
