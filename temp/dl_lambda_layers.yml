@@ -1,0 +1,38 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: 'AWS::Serverless-2016-10-31'
+Description: A SAM App that builds State tracker lambda layer
+Resources:
+  StateTrackerLayer:
+    Type: AWS::Serverless::LayerVersion
+    Properties:
+      ContentUri: layers/state_tracker/
+      CompatibleRuntimes:
+        - python3.7
+    Metadata:
+      BuildMethod: python3.7
+    RetentionPolicy: Retain
+  StateTrackerLayerPermission:
+    UpdateReplacePolicy: Retain
+    Type: AWS::Lambda::LayerVersionPermission
+    Properties:
+      Action: lambda:GetLayerVersion
+      LayerVersionArn: !Ref StateTrackerLayer
+      OrganizationId: o-ejz92fz9jv
+      Principal: "*"
+  PowertoolsLayer:
+    Type: AWS::Serverless::LayerVersion
+    Properties:
+      ContentUri: layers/powertools
+      CompatibleRuntimes:
+        - python3.7
+    Metadata:
+      BuildMethod: python3.7
+    RetentionPolicy: Retain
+  PowertoolsLayerLayerPermission:
+    UpdateReplacePolicy: Retain
+    Type: AWS::Lambda::LayerVersionPermission
+    Properties:
+      Action: lambda:GetLayerVersion
+      LayerVersionArn: !Ref PowertoolsLayer
+      OrganizationId: o-ejz92fz9jv
+      Principal: "*"

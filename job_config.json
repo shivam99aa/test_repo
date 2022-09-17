@@ -1,0 +1,37 @@
+{
+  "JobName": "Publish-Events-Finance",
+  "JobDescription": "This is a python spark job that will process a set of raw event tables (RawTableList) into parquet models",
+  "JobType": "glueetl",
+  "TrackingTypeID": 3,
+  "JobCapacity": "3",
+  "WorkerType": "Standard",
+  "GlueVersion": "3.0",
+  "UseDynamicAllocation": true,
+  "TriggerSchedule": "cron(45 * * * ? *)",
+  "ProcessIncrement": "hour",
+  "JobDependencies": [[
+      "das_stg_raw_events",
+      "das_stg_raw_events"
+    ]],
+  "HighPriority": false,
+  "DebugMode": false,
+  "RawDatabase": "das_raw_events",
+  "JobDelay": 3,
+  "RawTableList": [
+    "premium_subscribe",
+    "user_first_auth",
+    "premium_billed_success",
+    "circle_create_save"
+  ],
+  "ColumnFilter": ["first_name", "last_name", "phone", "email"],
+  "DatabaseName": "das_published_events",
+  "S3Destination": "s3://life360ds-published-events-prod",
+  "StartingPartition": "2020-07-01 00:00:00",
+  "WorkSpace": "$L360_BucketGlueWorkspace",
+
+  "DevConfig": {
+    "RawDatabase": "prod_das_raw_events",
+    "S3Destination": "s3://life360ds-testing-published-events-dev",
+    "DatabaseName": "dev_published_events"
+  }
+}

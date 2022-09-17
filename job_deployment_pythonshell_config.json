@@ -1,0 +1,65 @@
+{
+  "Parameters": {
+    "JobName": {"Type": "String"},
+    "JobDescription": {"Type": "String"},
+    "JobRole": {"Type": "String"},
+    "TempDir": {"Type": "String"},
+    "EnvConfig": {"Type": "String"},
+    "PyFiles": {"Type": "String"},
+    "JarFiles": {"Type": "String"},
+    "JobScriptPath": {"Type": "String"},
+    "JobType": {"Type": "String"},
+    "GlueVersion": {"Type": "String"},
+    "JobCapacity": {"Type": "Number"},
+    "TriggerName": {"Type": "String"},
+    "TriggerSchedule": {"Type": "String"}
+  },
+  "Resources": {
+    "GlueETLJob": {
+      "Type": "AWS::Glue::Job",
+      "Properties": {
+        "Command": {
+          "Name": {"Ref": "JobType"},
+          "ScriptLocation": {"Ref": "JobScriptPath"},
+          "PythonVersion":"3"
+        },
+        "DefaultArguments": {
+          "--enable-glue-datacatalog": "",
+          "--job-bookmark-option": "job-bookmark-disable",
+          "--job-language": "python",
+          "--enable-metrics": "true",
+          "--additional-python-modules": "s3://life360-glue-libraries-prod/Jinja2-3.0.1-py3-none-any.whl, s3://life360-glue-libraries-prod/PyYAML-5.4.1-cp36-cp36m-manylinux1_x86_64.whl",
+          "--TempDir": {"Ref": "TempDir"},
+          "--extra-py-files": {"Ref": "PyFiles"},
+          "--extra-files": {"Ref": "EnvConfig"},
+          "--extra-jars": {"Ref": "JarFiles"},
+          "--job_name": {"Ref": "JobName"},
+          "--env_config_path": {"Ref": "EnvConfig"},
+          "--job_start_datetime": "1900-01-01 00:00:00",
+          "--job_end_datetime": "1900-01-01 00:00:00"
+        },
+        "ExecutionProperty": {"MaxConcurrentRuns": 1},
+        "MaxCapacity" : {"Ref": "JobCapacity"},
+        "MaxRetries": 0,
+        "Name": {"Ref": "JobName"},
+        "Description": {"Ref": "JobDescription"},
+        "Role": {"Ref": "JobRole"},
+        "Tags": {"Key": "GlueJob", "Value": {"Ref": "JobName"}},
+        "GlueVersion": {"Ref": "GlueVersion"},
+        "Connections": {"Connections": ["statetracker"]}
+      }
+    },
+    "GlueETLJobTrigger": {
+      "Type": "AWS::Glue::Trigger",
+      "Properties": {
+        "Type": "SCHEDULED",
+        "Actions": [
+          {"JobName": {"Ref": "JobName"}}
+        ],
+        "Name": {"Ref": "TriggerName"},
+        "Schedule": {"Ref": "TriggerSchedule"},
+        "Tags": {"Key": "GlueJob", "Value": {"Ref": "JobName"}}
+      }
+    }
+  }
+}
